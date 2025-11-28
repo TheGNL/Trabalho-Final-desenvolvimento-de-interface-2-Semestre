@@ -1,0 +1,1365 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="FlowGames - Seu portal de notícias sobre games, reviews e lançamentos. Fique por dentro das últimas novidades do mundo gamer.">
+    <meta property="og:title" content="FlowGames - Portal de Notícias">
+    <meta property="og:description" content="As melhores notícias de games, reviews e lançamentos em um só lugar">
+    <meta property="og:type" content="website">
+    <meta property="og:image" content="https://images.unsplash.com/photo-1555864326-5cf22ef123cf?w=1200&h=630&fit=crop">
+    <title>FlowGames - Portal de Notícias</title>
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect, useRef } = React;
+       
+        // Ícones SVG
+        const Search = () => (
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                <circle cx="11" cy="11" r="8"></circle>
+                <path d="m21 21-4.3-4.3"></path>
+            </svg>
+        );
+
+        const Menu = () => (
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                <line x1="4" x2="20" y1="12" y2="12"></line>
+                <line x1="4" x2="20" y1="6" y2="6"></line>
+                <line x1="4" x2="20" y1="18" y2="18"></line>
+            </svg>
+        );
+
+        const X = () => (
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                <path d="M18 6 6 18"></path>
+                <path d="m6 6 12 12"></path>
+            </svg>
+        );
+
+        const Gamepad2 = () => (
+            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                <line x1="6" x2="10" y1="12" y2="12"></line>
+                <line x1="8" x2="8" y1="10" y2="14"></line>
+                <line x1="15" x2="15.01" y1="13" y2="13"></line>
+                <line x1="18" x2="18.01" y1="11" y2="11"></line>
+                <rect width="20" height="12" x="2" y="6" rx="2"></rect>
+            </svg>
+        );
+
+        const Newspaper = () => (
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                <path d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 1-2 2Zm0 0a2 2 0 0 1-2-2v-9c0-1.1.9-2 2-2h2"></path>
+                <path d="M18 14h-8"></path>
+                <path d="M15 18h-5"></path>
+                <path d="M10 6h8v4h-8V6Z"></path>
+            </svg>
+        );
+
+        const Trophy = () => (
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                <path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"></path>
+                <path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"></path>
+                <path d="M4 22h16"></path>
+                <path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"></path>
+                <path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"></path>
+                <path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"></path>
+            </svg>
+        );
+
+        const Flame = () => (
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                <path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"></path>
+            </svg>
+        );
+
+        const User = () => (
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path>
+                <circle cx="12" cy="7" r="4"></circle>
+            </svg>
+        );
+
+        const Calendar = () => (
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                <rect width="18" height="18" x="3" y="4" rx="2" ry="2"></rect>
+                <line x1="16" x2="16" y1="2" y2="6"></line>
+                <line x1="8" x2="8" y1="2" y2="6"></line>
+                <line x1="3" x2="21" y1="10" y2="10"></line>
+            </svg>
+        );
+
+        const TrendingUp = () => (
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                <polyline points="22 7 13.5 15.5 8.5 10.5 2 17"></polyline>
+                <polyline points="16 7 22 7 22 13"></polyline>
+            </svg>
+        );
+
+        const ChevronRight = () => (
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                <path d="m9 18 6-6-6-6"></path>
+            </svg>
+        );
+
+        const ChevronLeft = () => (
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                <path d="m15 18-6-6 6-6"></path>
+            </svg>
+        );
+
+        const Eye = () => (
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"></path>
+                <circle cx="12" cy="12" r="3"></circle>
+            </svg>
+        );
+
+        const Settings = () => (
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                <path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"></path>
+                <circle cx="12" cy="12" r="3"></circle>
+            </svg>
+        );
+
+        const Play = () => (
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                <polygon points="5 3 19 12 5 21 5 3"></polygon>
+            </svg>
+        );
+
+        const Book = () => (
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"></path>
+            </svg>
+        );
+
+        // Componente de Loading
+        const ImageLoader = ({ src, alt, className }) => {
+            const [loaded, setLoaded] = useState(false);
+            const [error, setError] = useState(false);
+
+            return (
+                <div className="relative">
+                    {!loaded && !error && (
+                        <div className={`${className} bg-gray-800 animate-pulse`}></div>
+                    )}
+                    {error ? (
+                        <div className={`${className} bg-gray-800 flex items-center justify-center`}>
+                            <span className="text-gray-500 text-sm">Imagem indisponível</span>
+                        </div>
+                    ) : (
+                        <img
+                            src={src}
+                            alt={alt}
+                            className={`${className} ${loaded ? 'opacity-100' : 'opacity-0'} transition-opacity duration-300`}
+                            onLoad={() => setLoaded(true)}
+                            onError={() => setError(true)}
+                        />
+                    )}
+                </div>
+            );
+        };
+
+        // Componente NewsCard
+        const NewsCard = ({ item, fontSize, darkMode }) => (
+            <a 
+                href={item.url} 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="block"
+            >
+                <article className={`${darkMode ? 'bg-gray-900' : 'bg-white shadow-md'} rounded-xl overflow-hidden group cursor-pointer transform hover:scale-[1.03] transition-all duration-300 hover:shadow-xl hover:shadow-purple-500/20`}>
+                    <div className="relative overflow-hidden">
+                        <ImageLoader
+                            src={item.image}
+                            alt={item.title}
+                            className="w-full h-48 object-cover group-hover:scale-110 transition-transform duration-300"
+                        />
+                        <span className="absolute top-3 left-3 px-3 py-1 bg-purple-600 rounded-full text-sm text-white">
+                            {item.category}
+                        </span>
+                    </div>
+                    <div className="p-4">
+                        <h3 className={`${fontSize === 'large' ? 'text-xl' : 'text-lg'} font-semibold mb-3 group-hover:text-purple-400 transition-colors line-clamp-2 ${darkMode ? 'text-white' : 'text-gray-900'}`}>
+                            {item.title}
+                        </h3>
+                        <div className="flex items-center justify-between text-sm text-gray-400">
+                            <div className="flex items-center space-x-2">
+                                <User />
+                                <span>{item.author}</span>
+                            </div>
+                            <div className="flex items-center space-x-1">
+                                <Eye />
+                                <span>{item.views}</span>
+                            </div>
+                        </div>
+                        <div className="flex items-center space-x-1 text-sm text-gray-500 mt-2">
+                            <Calendar />
+                            <span>{item.date}</span>
+                        </div>
+                    </div>
+                </article>
+            </a>
+        );
+
+        // Modal de Acessibilidade
+        const AccessibilityModal = ({ show, onClose, settings, onChange }) => {
+            if (!show) return null;
+
+            return (
+                <div 
+                    className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4 animate-fadeIn"
+                    onClick={(e) => e.target === e.currentTarget && onClose()}
+                    role="dialog"
+                    aria-modal="true"
+                    aria-labelledby="accessibility-title"
+                >
+                    <div className="bg-gray-900 rounded-xl p-8 max-w-md w-full border border-purple-500/20 animate-scaleIn">
+                        <div className="flex justify-between items-center mb-6">
+                            <h2 id="accessibility-title" className="text-2xl font-bold flex items-center space-x-2">
+                                <Settings />
+                                <span>Acessibilidade</span>
+                            </h2>
+                            <button 
+                                onClick={onClose}
+                                className="p-2 hover:bg-gray-800 rounded-lg transition-colors"
+                                aria-label="Fechar modal de acessibilidade"
+                            >
+                                <X />
+                            </button>
+                        </div>
+                        <div className="space-y-6">
+                            <div>
+                                <label htmlFor="font-size" className="block text-sm font-medium mb-2">
+                                    Tamanho da Fonte
+                                </label>
+                                <select
+                                    id="font-size"
+                                    value={settings.fontSize}
+                                    onChange={(e) => onChange('fontSize', e.target.value)}
+                                    className="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg focus:outline-none focus:border-purple-500"
+                                >
+                                    <option value="normal">Normal</option>
+                                    <option value="large">Grande</option>
+                                    <option value="xlarge">Muito Grande</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label className="flex items-center justify-between cursor-pointer">
+                                    <span className="text-sm font-medium">Alto Contraste</span>
+                                    <div className="relative">
+                                        <input
+                                            type="checkbox"
+                                            checked={settings.highContrast}
+                                            onChange={(e) => onChange('highContrast', e.target.checked)}
+                                            className="sr-only peer"
+                                        />
+                                        <div className="w-11 h-6 bg-gray-700 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-purple-800 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-purple-600"></div>
+                                    </div>
+                                </label>
+                            </div>
+                            <div>
+                                <label className="flex items-center justify-between cursor-pointer">
+                                    <span className="text-sm font-medium">Reduzir Animações</span>
+                                    <div className="relative">
+                                        <input
+                                            type="checkbox"
+                                            checked={settings.reduceMotion}
+                                            onChange={(e) => onChange('reduceMotion', e.target.checked)}
+                                            className="sr-only peer"
+                                        />
+                                        <div className="w-11 h-6 bg-gray-700 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-purple-800 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-purple-600"></div>
+                                    </div>
+                                </label>
+                            </div>
+                            <div>
+                                <label className="flex items-center justify-between cursor-pointer">
+                                    <span className="text-sm font-medium">Modo Escuro</span>
+                                    <div className="relative">
+                                        <input
+                                            type="checkbox"
+                                            checked={settings.darkMode}
+                                            onChange={(e) => onChange('darkMode', e.target.checked)}
+                                            className="sr-only peer"
+                                        />
+                                        <div className="w-11 h-6 bg-gray-700 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-purple-800 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-purple-600"></div>
+                                    </div>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            );
+        };
+
+        // Componente LoginModal
+        const LoginModal = ({ showLogin, setShowLogin, onLogin }) => {
+            const [isCreatingAccount, setIsCreatingAccount] = useState(false);
+
+            if (!showLogin) return null;
+
+            const handleSubmit = (e) => {
+                e.preventDefault();
+                if (isCreatingAccount) {
+                    const name = e.target.name.value;
+                    const email = e.target.email.value;
+                    const password = e.target.password.value;
+                    const confirmPassword = e.target.confirmPassword.value;
+                    
+                    if (password !== confirmPassword) {
+                        alert('As senhas não coincidem!');
+                        return;
+                    }
+                    
+                    if (name && email && password) {
+                        alert('Conta criada com sucesso!');
+                        setIsCreatingAccount(false);
+                    }
+                } else {
+                    onLogin(e);
+                }
+            };
+
+            return (
+                <div 
+                    className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4 animate-fadeIn"
+                    onClick={(e) => e.target === e.currentTarget && setShowLogin(false)}
+                    role="dialog"
+                    aria-modal="true"
+                    aria-labelledby="login-title"
+                >
+                    <div className="bg-gray-900 rounded-xl p-8 max-w-md w-full border border-purple-500/20 animate-scaleIn">
+                        <div className="flex justify-between items-center mb-6">
+                            <h2 id="login-title" className="text-2xl font-bold">
+                                {isCreatingAccount ? 'Criar Conta' : 'Login'}
+                            </h2>
+                            <button 
+                                onClick={() => setShowLogin(false)}
+                                className="p-2 hover:bg-gray-800 rounded-lg transition-colors"
+                                aria-label="Fechar modal de login"
+                            >
+                                <X />
+                            </button>
+                        </div>
+                        <form onSubmit={handleSubmit} className="space-y-4">
+                            <div>
+                                <label htmlFor="login-name" className="block text-sm font-medium mb-2">Nome</label>
+                                <input
+                                    id="login-name"
+                                    name="name"
+                                    type="text"
+                                    required
+                                    className="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg focus:outline-none focus:border-purple-500 transition-colors text-white"
+                                    placeholder="Seu nome"
+                                />
+                            </div>
+                            
+                            {isCreatingAccount && (
+                                <div>
+                                    <label htmlFor="login-email" className="block text-sm font-medium mb-2">Email</label>
+                                    <input
+                                        id="login-email"
+                                        name="email"
+                                        type="email"
+                                        required
+                                        className="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg focus:outline-none focus:border-purple-500 transition-colors text-white"
+                                        placeholder="seu@email.com"
+                                    />
+                                </div>
+                            )}
+                            
+                            <div>
+                                <label htmlFor="login-password" className="block text-sm font-medium mb-2">Senha</label>
+                                <input
+                                    id="login-password"
+                                    name="password"
+                                    type="password"
+                                    required
+                                    className="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg focus:outline-none focus:border-purple-500 transition-colors text-white"
+                                    placeholder="Sua senha"
+                                />
+                            </div>
+                            
+                            {isCreatingAccount && (
+                                <div>
+                                    <label htmlFor="login-confirm-password" className="block text-sm font-medium mb-2">Confirmar Senha</label>
+                                    <input
+                                        id="login-confirm-password"
+                                        name="confirmPassword"
+                                        type="password"
+                                        required
+                                        className="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg focus:outline-none focus:border-purple-500 transition-colors text-white"
+                                        placeholder="Confirme sua senha"
+                                    />
+                                </div>
+                            )}
+                            
+                            <button 
+                                type="submit"
+                                className="w-full py-3 bg-purple-600 hover:bg-purple-700 rounded-lg font-medium transition-colors"
+                            >
+                                {isCreatingAccount ? 'Criar Conta' : 'Entrar'}
+                            </button>
+                            
+                            <div className="text-center">
+                                <button
+                                    type="button"
+                                    onClick={() => setIsCreatingAccount(!isCreatingAccount)}
+                                    className="text-sm text-purple-400 hover:text-purple-300 underline"
+                                >
+                                    {isCreatingAccount ? 'Já tem uma conta? Faça login' : 'Não tem conta? Criar agora'}
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            );
+        };
+
+        const GamingNewsPortal = () => {
+            const [menuOpen, setMenuOpen] = useState(false);
+            const [selectedCategory, setSelectedCategory] = useState('todas');
+            const [showLogin, setShowLogin] = useState(false);
+            const [isLoggedIn, setIsLoggedIn] = useState(false);
+            const [userName, setUserName] = useState('');
+            const [searchQuery, setSearchQuery] = useState('');
+            const [showSearch, setShowSearch] = useState(false);
+            const [email, setEmail] = useState('');
+            const [currentHeroIndex, setCurrentHeroIndex] = useState(0);
+            const [currentNewsPage, setCurrentNewsPage] = useState(0);
+            const [isHeroHovered, setIsHeroHovered] = useState(false);
+            const [showAccessibility, setShowAccessibility] = useState(false);
+            const [accessibilitySettings, setAccessibilitySettings] = useState({
+                fontSize: 'normal',
+                highContrast: false,
+                reduceMotion: false,
+                darkMode: true
+            });
+            const [trendingIndex, setTrendingIndex] = useState(0);
+            const heroTimerRef = useRef(null);
+
+            const categories = ['Todas', 'PC', 'PlayStation', 'Xbox', 'Nintendo', 'Mobile', 'eSports', 'Reviews','Vídeos'];
+
+            const heroNews = [
+                {
+                    title: 'Jogos da PlayStation em oferta de BLACK FRIDAY na Steam; até 80% de desconto',
+                    category: 'PlayStation',
+                    image: 'https://www.adrenaline.com.br/wp-content/uploads/2023/09/steam-1.jpg',
+                    excerpt: 'Confira os principais jogos distribuídos pela PlayStation disponíveis em oferta com desconto por tempo limitado na Steam',
+                    author: 'Juliano Aires',
+                    date: '22 Nov 2025',
+                    views: '45.2k',
+                    url: 'https://www.adrenaline.com.br/noticias/jogos-da-playstation-em-oferta-de-black-friday-na-steam-ate-80-de-desconto/'
+                },
+                {
+                    title: 'LPL 2026',
+                    category: 'eSports',
+                    image: 'https://static.invenglobal.com/upload/image/2020/08/27/i1598538583486423.jpeg',
+                    excerpt: 'TES anuncia promessas chinesas e contará com dois ADCs',
+                    author: 'Pedro Santos',
+                    date: '25 Nov 2025',
+                    views: '32.8k',
+                    url: 'https://maisesports.com.br/lpl-2026-tes-anuncia-promessas-chinesas-e-contara-com-dois-adcs/'
+                },
+                {
+                    title: 'Battlefield 6 fica de graça por tempo limitado, saiba como aproveitar',
+                    category: 'Xbox',
+                    image: 'https://hotsite.pichau.com.br/intel/battlefield6/src/assets/BF6.jpg',
+                    excerpt: 'Teste gratuito está disponível até 2 de dezembro',
+                    author: 'Lucas Silva',
+                    date: '27 Nov 2025',
+                    views: '28.5k',
+                    url: 'https://www.omelete.com.br/games/battlefield-6-de-graca-por-tempo-limitado-saiba-como-jogar'
+                }
+            ];
+
+            const allNews = {
+                noticias: [
+                    {
+                        id: 1,
+                        title: 'CBLOL: Vivo Keyd Stars anuncia a contratação do suporte Kaiwing, ex-CFO',
+                        category: 'eSports',
+                        image: 'https://medias.itatiaia.com.br/dims4/default/d34c275/2147483647/strip/true/crop/1471x828+577+14/resize/1000x563!/format/webp/quality/90/?url=https%3A%2F%2Fk2-prod-radio-itatiaia.s3.us-east-1.amazonaws.com%2Fbrightspot%2Fe1%2F2f%2Ff75d29844d75ac33d9498e7cc118%2F54886732217-176b7f4d24-k.jpg',
+                        author: 'Ana Costa',
+                        date: '25 Nov 2025',
+                        views: '27.6k',
+                        url:"https://www.itatiaia.com.br/esportes/esports/cblol-vivo-keyd-stars-anuncia-a-contratacao-do-suporte-kaiwing-ex-cfo"
+                    },
+                    {
+                        id: 2,
+                        title: 'PS Plus de dezembro terá 5 jogos grátis para os assinantes do serviço! Veja lista',
+                        category: 'PlayStation',
+                        image: 'https://psxbrasil.com.br/wp-content/uploads/2025/11/G6scOmgXEAQU0zB.jpg',
+                        author: 'Pedro Santos',
+                        date: '26 Nov 2025',
+                        views: '38.4k',
+                        url:"https://www.tecmundo.com.br/voxel/502906-ps-plus-de-dezembro-tera-5-jogos-gratis-para-os-assinantes-do-servico-veja-lista.htm"
+                    },
+                    {
+                        id: 3,
+                        title: 'The Game Awards 2025: onde jogar cada game indicado ao GOTY',
+                        category: 'Reviews',
+                        image: 'https://img.odcdn.com.br/wp-content/uploads/2025/11/game-awrds-1920x1080.jpg',
+                        author: 'Maria Oliveira',
+                        date: '27 Nov 2025',
+                        views: '52.1k',
+                        url: 'https://olhardigital.com.br/2025/11/27/games-e-consoles/the-game-awards-2025-onde-jogar-cada-game-indicado-ao-goty/'
+                    }
+                ],
+                reviews: [
+                    {
+                        id: 4,
+                        title: 'A.I.L.A., jogo indie brasileiro de sobrevivência e terror, está disponível para PC, PS5 e XBOX Series',
+                        category: 'Vídeos',
+                        image: 'https://i0.wp.com/dropsdejogos.uai.com.br/wp-content/uploads/sites/10/2025/11/aila-2.jpg?w=650&ssl=1',
+                        author: 'Lucas Silva',
+                        date: '26 Nov 2025',
+                        views: '45.8k',
+                        rating: 9.5,
+                        url:'https://www.youtube.com/watch?v=4-ucG7mF0vM'
+                    },
+                    {
+                        id: 5,
+                        title: 'Far Cry ganhará série de TV com uma das maiores características do jogo',
+                        category: 'Reviews',
+                        image: 'https://tm.ibxk.com.br/2025/11/25/CHECKPOINT_VOXEL_a4eee15a49.jpg?ims=fit-in/800x500/filters:quality(70)',
+                        author: 'Fernando Costa',
+                        date: '25 Nov 2025',
+                        views: '38.2k',
+                        rating: 8.5,
+                        url: 'https://www.tecmundo.com.br/voxel/502895-far-cry-ganhara-serie-de-tv-com-uma-das-maiores-caracteristicas-do-jogo.htm'
+                    },
+                    {
+                        id: 6,
+                        title: 'Kirby Air Riders para Nintendo Switch 2 pode ter ray tracing, mas há um porém',
+                        category: 'Nintendo',
+                        image: 'https://t2.tudocdn.net/770616?w=660&h=371',
+                        author: 'Ana Costa',
+                        date: '21 Nov 2025',
+                        views: '41.5k',
+                        rating: 9.0,
+                        url:'https://www.tudocelular.com/jogos/noticias/n242896/kirby-air-riders-pode-ter-ray-tracing.html'
+                    },
+                    {
+                        id: 7,
+                        title: 'Crocs e Xbox lançam sandália gamer inspirada no console',
+                        category: 'Xbox',
+                        image: 'https://gamehall.com.br/wp-content/uploads/2025/11/crocs-xbox.webp',
+                        author: 'Roberto Lima',
+                        date: '25 Nov 2025',
+                        views: '36.9k',
+                        rating: 9.5,
+                        url:'https://gamehall.com.br/crocs-e-xbox-lancam-sandalia-gamer-inspirada-no-console/'
+                    }
+                ],
+                guias: [
+                    {
+                        id: 8,
+                        title: 'Steam Machine promete potência, mas preço pode ultrapassar US$ 1.000',
+                        category: 'PC',
+                        image: 'https://www.gamevicio.com/wp-content/uploads/2025/11/Captura-de-tela-2025-11-12-150711.png',
+                        author: 'Carlos Mendes',
+                        date: '22 Nov 2025',
+                        views: '28.3k',
+                        url:'https://www.gamevicio.com/noticias/2025/11/steam-machine-preco-potencia-1000/'
+                    },
+                    {
+                        id: 9,
+                        title: 'Intergalactic, novo jogo da Naughty Dog, não será lançado em 2026 e também não aparecerá no The Game Awards',
+                        category: 'Reviews',
+                        image: 'https://criticalhits.com.br/wp-content/webp-express/webp-images/doc-root/wp-content/uploads/2025/08/Intergalactic2-1280x720.jpg.webp',
+                        author: 'Julia Ferreira',
+                        date: '24 Nov 2025',
+                        views: '45.7k',
+                        url:'https://criticalhits.com.br/games/intergalactic-novo-jogo-da-naughty-dog-nao-sera-lancado-em-2026-e-tambem-nao-aparecera-no-the-game-awards/'
+                    },
+                    {
+                        id: 10,
+                        title: 'Dias para jogar de Graça: The First Berserker: Khazan, Hypnospace Outlaw, Let’s Build a Zoo e mais',
+                        category: 'Xbox',
+                        image: 'https://xboxwire.thesourcemediaassets.com/sites/8/2025/11/FreePlayDays_11-27-2025_1920x1080_5shot-11759bd552eb562d25be.jpg',
+                        author: 'Pedro Santos',
+                        date: '27 Nov 2025',
+                        views: '52.4k',
+                        url:'https://news.xbox.com/pt-br/2025/11/27/dias-para-jogar-de-graca-the-first-berserker-khazan-hypnospace-outlaw-lets-build-a-zoo-e-mais/'
+                    },
+                    {
+                        id: 11,
+                        title: 'Death Stranding 2 pode chegar ao PC mais cedo que o esperado! Saiba o motivo',
+                        category: 'Pc',
+                        image: 'https://tm.ibxk.com.br/2025/11/26/CHECKPOINT_VOXEL_692134e1c9.jpg?ims=1280x605/filters:quality(80)',
+                        author: 'Mariana Santos',
+                        date: '26 Nov 2025',
+                        views: '38.1k',
+                        url:'https://www.tecmundo.com.br/voxel/502908-death-stranding-2-pode-chegar-ao-pc-mais-cedo-que-o-esperado-saiba-o-motivo.htm'
+                    }
+                ],
+                videos: [
+                    {
+                        id: 12,
+                        title: 'Prêmios Steam 2025 iniciam processo de seleção, veja como participar',
+                        category: 'Pc',
+                        image: 'https://www.adrenaline.com.br/wp-content/uploads/2025/11/Premios-Steam-2025-Processo-Selecao-Valve-912x569.jpg',
+                        author: 'Ana Costa',
+                        date: '26 Nov 2025',
+                        views: '125.3k',
+                        url: 'https://www.adrenaline.com.br/games/premios-steam-2025-iniciam-processo-de-selecao-veja-como-participar/amp/'
+                    },
+                    {
+                        id: 13,
+                        title: 'Atualização Xbox de novembro: Gaming Copilot no mobile, Experiência de Tela Cheia já disponível e mais',
+                        category: 'Mobile',
+                        image: 'https://xboxwire.thesourcemediaassets.com/sites/8/2025/11/Cloud-Launch-in-IN-KV-2-0960f94c8db167d2e93f-1900x1080.jpg',
+                        author: 'Fernando Costa',
+                        date: '25 Nov 2025',
+                        views: '89.7k',
+                        url: 'https://news.xbox.com/pt-br/2025/11/25/atualizacao-xbox-de-novembro-gaming-copilot-no-mobile-experiencia-de-tela-cheia-ja-disponivel-e-mais/'
+                    },
+                    {
+                        id: 14,
+                        title: 'Ghost Town será lançado em 1º de dezembro para PS VR2',
+                        category: 'Playstation',
+                        image: 'https://i.ytimg.com/vi/1RgXEHsnAOg/maxresdefault.jpg',
+                        author: 'Lucas Silva',
+                        date: '27 Nov 2025',
+                        views: '156.2k',
+                        url: 'https://psxbrasil.com.br/ghost-town-sera-lancado-em-1o-de-dezembro-para-ps-vr2/'
+                    },
+                    {
+                        id: 15,
+                        title: 'CBLOL 2026: tinowns assina com a paiN Gaming, diz jornalista',
+                        category: 'eSports',
+                        image: 'https://noticias.maisesports.com.br/wp-content/uploads/2021/05/paiN-Tinowns-MSI-2021-800x555.jpg',
+                        author: 'Roberto Lima',
+                        date: '25 Nov 2025',
+                        views: '98.5k',
+                        url: 'https://maisesports.com.br/cblol-2026-tinowns-assina-com-a-pain-gaming-diz-jornalista/'
+                    },
+                    {
+                        id: 16,
+                        title: 'CBLOL 2026: LOUD fecha com novo jungler, diz portal',
+                        category: 'eSports',
+                        image: 'https://noticias.maisesports.com.br/wp-content/uploads/2025/11/YoungJae-1120x630.jpg',
+                        author: 'Fernando Costa',
+                        date: '25 Nov 2025',
+                        views: '89.7k',
+                        url: 'https://maisesports.com.br/cblol-2026-loud-fecha-com-novo-jungler-diz-portal/'
+                    }
+                ]
+            };
+
+            const trending = [
+                { 
+                    title: 'Fortnite estreia sequência oficial de Kill Bill com animação dirigida por Tarantino', 
+                    views: '142k', 
+                    url: 'https://www.gamevicio.com/noticias/2025/11/fortnite-kill-bill-animacao-tarantino/',
+                    image: 'https://www.gamevicio.com/wp-content/uploads/2025/11/Fortnite-2-1067x600.webp'
+                },
+                { 
+                    title: 'Cyberpunk 2077 supera The Witcher 3 e vira principal fonte de renda da CD Projekt RED', 
+                    views: '128k', 
+                    url: 'https://www.adrenaline.com.br/noticias/cyberpunk-2077-supera-the-witcher-3-e-vira-principal-fonte-de-renda-da-cd-projekt-red/amp/',
+                    image: 'https://www.adrenaline.com.br/wp-content/uploads/2025/11/Cyberpunk-2077-Supera-The-Witcher-Renda-CD-Projekt-RED-912x569.jpg'
+                },
+                { 
+                    title: 'Red Bull leva à CCXP25 ativações de Tetris, F1, outros games e programação especial com atletas e influenciadores', 
+                    views: '115k', 
+                    url: 'https://cebolaverde.com.br/noticias/red-bull-leva-a-ccxp25-ativacoes-de-tetris-f1-outros-games-e-programacao-especial-com-atletas-e-influenciadores/#google_vignette',
+                    image: 'https://livemarketing.com.br/wp-content/uploads/2025/11/Red-Bull-na-CCXP25-1024x683.jpg'
+                },
+                { 
+                    title: 'CD Projekt afirma que The Witcher 4 não estará presente no The Game Awards de 2025', 
+                    views: '98k', 
+                    url: 'https://br.ign.com/the-witcher-4-1/148674/news/cd-projekt-afirma-que-the-witcher-4-nao-estara-presente-no-the-game-awards-de-2025',
+                    image: 'https://meups.com.br/wp-content/uploads/2025/11/The-Witcher-4-1-900x503.jpg'
+                }
+            ];
+
+            // Auto-play carrossel hero com pause on hover
+            useEffect(() => {
+                if (!isHeroHovered && !accessibilitySettings.reduceMotion) {
+                    const timer = setInterval(() => {
+                        setCurrentHeroIndex((prev) => (prev + 1) % heroNews.length);
+                    }, 5000);
+                    heroTimerRef.current = timer;
+                }
+                return () => {
+                    if (heroTimerRef.current) {
+                        clearInterval(heroTimerRef.current);
+                    }
+                };
+            }, [isHeroHovered, heroNews.length, accessibilitySettings.reduceMotion]);
+
+            // Reset page quando filtro muda
+            useEffect(() => {
+                setCurrentNewsPage(0);
+            }, [selectedCategory, searchQuery]);
+
+            // Combinar todas as notícias de todas as seções
+            const allNewsArray = [
+                ...allNews.noticias,
+                ...allNews.reviews,
+                ...allNews.guias,
+                ...allNews.videos
+            ];
+
+            // Filtrar por categoria e busca
+            const filteredNews = allNewsArray.filter(item => {
+                const matchesCategory = selectedCategory === 'todas' || item.category.toLowerCase() === selectedCategory;
+                const matchesSearch = searchQuery === '' || 
+                    item.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                    item.author.toLowerCase().includes(searchQuery.toLowerCase());
+                return matchesCategory && matchesSearch;
+            });
+
+            const newsPerPage = 4;
+            const totalPages = Math.max(1, Math.ceil(filteredNews.length / newsPerPage));
+            const displayedNews = filteredNews.slice(
+                currentNewsPage * newsPerPage,
+                (currentNewsPage + 1) * newsPerPage
+            );
+
+            // Auto-play carrossel trending
+            useEffect(() => {
+                if (!accessibilitySettings.reduceMotion) {
+                    const timer = setInterval(() => {
+                        setTrendingIndex((prev) => (prev + 1) % trending.length);
+                    }, 4000);
+                    return () => clearInterval(timer);
+                }
+            }, [accessibilitySettings.reduceMotion, trending.length]);
+
+            // Salvar configurações de acessibilidade
+            useEffect(() => {
+                localStorage.setItem('accessibilitySettings', JSON.stringify(accessibilitySettings));
+            }, [accessibilitySettings]);
+
+            // Carregar configurações salvas
+            useEffect(() => {
+                const saved = localStorage.getItem('accessibilitySettings');
+                if (saved) {
+                    setAccessibilitySettings(JSON.parse(saved));
+                }
+            }, []);
+
+            const handleLogin = (e) => {
+                e.preventDefault();
+                const name = e.target.name.value;
+                const password = e.target.password.value;
+                if (name && password) {
+                    setUserName(name);
+                    setIsLoggedIn(true);
+                    setShowLogin(false);
+                    localStorage.setItem('userName', name);
+                    localStorage.setItem('isLoggedIn', 'true');
+                }
+            };
+
+            const handleLogout = () => {
+                setIsLoggedIn(false);
+                setUserName('');
+                localStorage.removeItem('userName');
+                localStorage.removeItem('isLoggedIn');
+            };
+
+            const handleSearch = (e) => {
+                e.preventDefault();
+                if (searchQuery.trim()) {
+                    // A busca já está funcionando via filteredNews
+                    // Apenas fecha o menu de busca e mantém o query
+                    setShowSearch(true);
+                }
+            };
+
+            const handleNewsletter = (e) => {
+                e.preventDefault();
+                if (email && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+                    alert(`Email ${email} cadastrado com sucesso!`);
+                    setEmail('');
+                } else {
+                    alert('Por favor, insira um email válido.');
+                }
+            };
+
+            const handleAccessibilityChange = (key, value) => {
+                setAccessibilitySettings(prev => ({
+                    ...prev,
+                    [key]: value
+                }));
+            };
+
+            const nextHero = () => {
+                setCurrentHeroIndex((prev) => (prev + 1) % heroNews.length);
+            };
+
+            const prevHero = () => {
+                setCurrentHeroIndex((prev) => (prev - 1 + heroNews.length) % heroNews.length);
+            };
+
+            const nextNewsPage = () => {
+                if (currentNewsPage < totalPages - 1) {
+                    setCurrentNewsPage((prev) => prev + 1);
+                }
+            };
+
+            const prevNewsPage = () => {
+                if (currentNewsPage > 0) {
+                    setCurrentNewsPage((prev) => prev - 1);
+                }
+            };
+
+            // Navegação por teclado no carrossel
+            useEffect(() => {
+                const handleKeyPress = (e) => {
+                    if (e.key === 'ArrowLeft') prevHero();
+                    if (e.key === 'ArrowRight') nextHero();
+                };
+                window.addEventListener('keydown', handleKeyPress);
+                return () => window.removeEventListener('keydown', handleKeyPress);
+            }, []);
+
+            const bgClass = accessibilitySettings.darkMode ? 'bg-gray-950' : 'bg-gradient-to-br from-purple-50 via-blue-50 to-indigo-50';
+            const textClass = accessibilitySettings.darkMode ? 'text-white' : 'text-white';
+            const cardBgClass = accessibilitySettings.darkMode ? 'bg-gray-900' : 'bg-white/90 backdrop-blur-sm';
+            const borderClass = accessibilitySettings.darkMode ? 'border-gray-700' : 'border-purple-200';
+            const hoverBgClass = accessibilitySettings.darkMode ? 'hover:bg-gray-800' : 'hover:bg-purple-100';
+            const contrastClass = accessibilitySettings.highContrast ? 'contrast-125' : '';
+            const headerTextClass = accessibilitySettings.darkMode ? 'text-white' : 'text-gray-900';
+
+            return (
+                <div className={`min-h-screen ${bgClass} ${textClass} ${contrastClass}`} style={{ fontSize: accessibilitySettings.fontSize === 'large' ? '1.125rem' : accessibilitySettings.fontSize === 'xlarge' ? '1.25rem' : '1rem' }}>
+                    <style>{`
+                        @keyframes fadeIn {
+                            from { opacity: 0; }
+                            to { opacity: 1; }
+                        }
+                        @keyframes scaleIn {
+                            from { transform: scale(0.9); opacity: 0; }
+                            to { transform: scale(1); opacity: 1; }
+                        }
+                        .animate-fadeIn {
+                            animation: fadeIn 0.2s ease-out;
+                        }
+                        .animate-scaleIn {
+                            animation: scaleIn 0.3s ease-out;
+                        }
+                        ${accessibilitySettings.reduceMotion ? `
+                            * {
+                                animation-duration: 0.01ms !important;
+                                animation-iteration-count: 1 !important;
+                                transition-duration: 0.01ms !important;
+                            }
+                        ` : ''}
+                        html {
+                            scroll-behavior: smooth;
+                        }
+                    `}</style>
+
+                    {/* Botão de Acessibilidade Flutuante */}
+                    <button
+                        onClick={() => setShowAccessibility(true)}
+                        className="fixed bottom-6 right-6 z-40 p-4 bg-purple-600 hover:bg-purple-700 rounded-full shadow-lg transition-all hover:scale-110"
+                        aria-label="Abrir configurações de acessibilidade"
+                        title="Acessibilidade"
+                    >
+                        <Settings />
+                    </button>
+
+                    {/* Header */}
+                    <header className="bg-gradient-to-r from-purple-900 via-indigo-900 to-blue-900 shadow-lg sticky top-0 z-50 border-b border-purple-500/20">
+                        <div className="container mx-auto px-4">
+                            <div className="flex items-center justify-between h-16">
+                                <div className="flex items-center space-x-2 group cursor-pointer">
+                                    <Gamepad2 />
+                                    <span className="text-2xl font-bold bg-gradient-to-r from-purple-400 to-blue-400 bg-clip-text text-transparent">
+                                        FlowGames
+                                    </span>
+                                </div>
+
+                                <nav className="hidden md:flex items-center space-x-6" role="navigation" aria-label="Navegação principal">
+                                    <button onClick={() => { setSelectedCategory('todas'); setSearchQuery(''); }} className="hover:text-purple-400 transition-colors flex items-center space-x-1">
+                                        <Newspaper />
+                                        <span>Notícias</span>
+                                    </button>
+                                    <button onClick={() => { setSelectedCategory('reviews'); setSearchQuery(''); }} className="hover:text-purple-400 transition-colors flex items-center space-x-1">
+                                        <Trophy />
+                                        <span>Reviews</span>
+                                    </button>
+                                    <button onClick={() => { setSelectedCategory('vídeos'); setSearchQuery(''); }} className="hover:text-purple-400 transition-colors flex items-center space-x-1">
+                                        <Play />
+                                        <span>Vídeos</span>
+                                    </button>
+                                </nav>
+
+                                <div className="flex items-center space-x-4">
+                                    <button 
+                                        onClick={() => setShowSearch(!showSearch)}
+                                        className="hidden md:block p-2 hover:bg-white/10 rounded-lg transition-colors"
+                                        aria-label="Buscar notícias"
+                                    >
+                                        <Search />
+                                    </button>
+                                    {isLoggedIn ? (
+                                        <div className="hidden md:flex items-center space-x-2">
+                                            <span className="text-sm">Olá, {userName}</span>
+                                            <button 
+                                                onClick={handleLogout}
+                                                className="px-4 py-2 bg-red-600 hover:bg-red-700 rounded-lg text-sm transition-colors"
+                                            >
+                                                Sair
+                                            </button>
+                                        </div>
+                                    ) : (
+                                        <button 
+                                            onClick={() => setShowLogin(true)}
+                                            className="hidden md:block px-4 py-2 bg-purple-600 hover:bg-purple-700 rounded-lg text-sm transition-colors"
+                                        >
+                                            Entrar
+                                        </button>
+                                    )}
+                                    <button
+                                        className="md:hidden p-2 hover:bg-white/10 rounded-lg transition-colors"
+                                        onClick={() => setMenuOpen(!menuOpen)}
+                                        aria-label={menuOpen ? "Fechar menu" : "Abrir menu"}
+                                        aria-expanded={menuOpen}
+                                    >
+                                        {menuOpen ? <X /> : <Menu />}
+                                    </button>
+                                </div>
+                            </div>
+
+                            {/* Search Bar */}
+                            {showSearch && (
+                                <div className="pb-4 animate-fadeIn">
+                                    <form onSubmit={handleSearch} className="flex gap-2" role="search">
+                                        <div className="flex-1 relative">
+                                            <input
+                                                type="search"
+                                                value={searchQuery}
+                                                onChange={(e) => setSearchQuery(e.target.value)}
+                                                placeholder="Buscar notícias, reviews, guias ou vídeos..."
+                                                className="w-full px-4 py-2 bg-gray-900 border border-gray-700 rounded-lg focus:outline-none focus:border-purple-500 transition-colors text-white pr-10"
+                                                aria-label="Campo de busca"
+                                            />
+                                            {searchQuery && (
+                                                <div className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-gray-400">
+                                                    {filteredNews.length} resultados
+                                                </div>
+                                            )}
+                                        </div>
+                                        {searchQuery && (
+                                            <button 
+                                                type="button"
+                                                onClick={() => setSearchQuery('')}
+                                                className="px-4 py-2 bg-gray-700 hover:bg-gray-600 rounded-lg transition-colors"
+                                            >
+                                                Limpar
+                                            </button>
+                                        )}
+                                    </form>
+                                    {searchQuery && (
+                                        <p className="mt-2 text-sm text-gray-400">
+                                            Buscando em todas as seções: Notícias, Reviews, Guias e Vídeos
+                                        </p>
+                                    )}
+                                </div>
+                            )}
+
+                            {/* Mobile Menu */}
+                            {menuOpen && (
+                                <div className="md:hidden py-4 border-t border-purple-500/20 animate-fadeIn">
+                                    <nav className="flex flex-col space-y-3">
+                                        <button onClick={() => { setSelectedCategory('todas'); setSearchQuery(''); setMenuOpen(false); }} className="p-2 hover:bg-white/10 rounded-lg transition-colors text-left">Notícias</button>
+                                        <button onClick={() => { setSelectedCategory('reviews'); setSearchQuery(''); setMenuOpen(false); }} className="p-2 hover:bg-white/10 rounded-lg transition-colors text-left">Reviews</button>
+                                        <button onClick={() => { setSelectedCategory('vídeos'); setSearchQuery(''); setMenuOpen(false); }} className="p-2 hover:bg-white/10 rounded-lg transition-colors text-left">Vídeos</button>
+                                        {isLoggedIn ? (
+                                            <>
+                                                <span className="p-2 text-sm">Olá, {userName}</span>
+                                                <button onClick={handleLogout} className="p-2 bg-red-600 hover:bg-red-700 rounded-lg text-left transition-colors">
+                                                    Sair
+                                                </button>
+                                            </>
+                                        ) : (
+                                            <button onClick={() => setShowLogin(true)} className="p-2 bg-purple-600 hover:bg-purple-700 rounded-lg text-left transition-colors">
+                                                Entrar
+                                            </button>
+                                        )}
+                                    </nav>
+                                </div>
+                            )}
+                        </div>
+                    </header>
+
+                    {/* Modals */}
+                    <LoginModal 
+                        showLogin={showLogin} 
+                        setShowLogin={setShowLogin} 
+                        onLogin={handleLogin} 
+                    />
+                    <AccessibilityModal
+                        show={showAccessibility}
+                        onClose={() => setShowAccessibility(false)}
+                        settings={accessibilitySettings}
+                        onChange={handleAccessibilityChange}
+                    />
+
+                    {/* Categories */}
+                    <div className={`${cardBgClass} border-b ${borderClass} sticky top-16 z-40 shadow-sm`}>
+                        <div className="container mx-auto px-4">
+                            <div className="flex items-center space-x-4 py-3">
+                                <span className={`text-sm font-semibold ${headerTextClass} whitespace-nowrap`}>
+                                    Filtros:
+                                </span>
+                                <div className="flex items-center space-x-2 overflow-x-auto scrollbar-hide">
+                                    {categories.map((cat) => (
+                                        <button
+                                            key={cat}
+                                            onClick={() => setSelectedCategory(cat.toLowerCase())}
+                                            className={`px-4 py-2 rounded-full whitespace-nowrap transition-all ${
+                                                selectedCategory === cat.toLowerCase()
+                                                    ? 'bg-purple-600 text-white shadow-lg'
+                                                    : `${cardBgClass} ${accessibilitySettings.darkMode ? 'text-gray-300' : 'text-gray-700'} ${hoverBgClass} border ${borderClass}`
+                                            }`}
+                                            aria-pressed={selectedCategory === cat.toLowerCase()}
+                                        >
+                                            {cat}
+                                        </button>
+                                    ))}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Main Content */}
+                    <main className="container mx-auto px-4 py-8">
+                        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                            <div className="lg:col-span-2">
+                                {/* Hero News Carousel */}
+                                <a 
+                                    href={heroNews[currentHeroIndex].url}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="block relative rounded-2xl overflow-hidden group cursor-pointer mb-8"
+                                    onMouseEnter={() => setIsHeroHovered(true)}
+                                    onMouseLeave={() => setIsHeroHovered(false)}
+                                >
+                                    <ImageLoader
+                                        src={heroNews[currentHeroIndex].image}
+                                        alt={heroNews[currentHeroIndex].title}
+                                        className="w-full h-96 object-cover"
+                                    />
+                                    <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent" />
+                                    <div className="absolute bottom-0 p-6 w-full">
+                                        <span className="inline-block px-3 py-1 bg-purple-600 rounded-full text-sm mb-3">
+                                            {heroNews[currentHeroIndex].category}
+                                        </span>
+                                        <h2 className="text-3xl md:text-4xl font-bold mb-3 group-hover:text-purple-400 transition-colors">
+                                            {heroNews[currentHeroIndex].title}
+                                        </h2>
+                                        <p className="text-gray-300 mb-4">{heroNews[currentHeroIndex].excerpt}</p>
+                                        <div className="flex items-center space-x-4 text-sm text-gray-400">
+                                            <div className="flex items-center space-x-1">
+                                                <User />
+                                                <span>{heroNews[currentHeroIndex].author}</span>
+                                            </div>
+                                            <div className="flex items-center space-x-1">
+                                                <Calendar />
+                                                <span>{heroNews[currentHeroIndex].date}</span>
+                                            </div>
+                                            <div className="flex items-center space-x-1">
+                                                <Eye />
+                                                <span>{heroNews[currentHeroIndex].views}</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    {/* Carousel Controls */}
+                                    <button
+                                        onClick={(e) => { e.preventDefault(); prevHero(); }}
+                                        className="absolute left-4 top-1/2 -translate-y-1/2 p-2 bg-black/50 hover:bg-black/70 rounded-full transition-all opacity-0 group-hover:opacity-100"
+                                        aria-label="Notícia anterior (use seta esquerda)"
+                                    >
+                                        <ChevronLeft />
+                                    </button>
+                                    <button
+                                        onClick={(e) => { e.preventDefault(); nextHero(); }}
+                                        className="absolute right-4 top-1/2 -translate-y-1/2 p-2 bg-black/50 hover:bg-black/70 rounded-full transition-all opacity-0 group-hover:opacity-100"
+                                        aria-label="Próxima notícia (use seta direita)"
+                                    >
+                                        <ChevronRight />
+                                    </button>
+                                    
+                                    {/* Carousel Indicators */}
+                                    <div className="absolute bottom-20 left-1/2 -translate-x-1/2 flex space-x-2">
+                                        {heroNews.map((_, index) => (
+                                            <button
+                                                key={index}
+                                                onClick={(e) => { e.preventDefault(); setCurrentHeroIndex(index); }}
+                                                className={`h-2 rounded-full transition-all ${
+                                                    index === currentHeroIndex ? 'bg-purple-500 w-8' : 'bg-gray-400 w-2'
+                                                }`}
+                                                aria-label={`Ir para notícia ${index + 1} de ${heroNews.length}`}
+                                                aria-current={index === currentHeroIndex}
+                                            />
+                                        ))}
+                                    </div>
+                                </a>
+
+                                {/* News Grid - Sem Section Tabs */}
+                                <div className="flex flex-col md:flex-row md:items-center justify-between mb-6 gap-4">
+                                    <h2 className="text-2xl font-bold flex items-center space-x-2" id="noticias">
+                                        <Newspaper />
+                                        <span>Todas as Notícias</span>
+                                        {searchQuery && (
+                                            <span className="text-sm text-gray-400 font-normal">
+                                                ({filteredNews.length} resultado{filteredNews.length !== 1 ? 's' : ''})
+                                            </span>
+                                        )}
+                                    </h2>
+                                    {filteredNews.length > newsPerPage && (
+                                        <div className="flex items-center space-x-2">
+                                            <button
+                                                onClick={prevNewsPage}
+                                                disabled={currentNewsPage === 0}
+                                                className="p-2 bg-gray-800 hover:bg-gray-700 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                                                aria-label="Página anterior de notícias"
+                                            >
+                                                <ChevronLeft />
+                                            </button>
+                                            <span className="text-sm text-gray-400" aria-live="polite">
+                                                {currentNewsPage + 1} / {totalPages}
+                                            </span>
+                                            <button
+                                                onClick={nextNewsPage}
+                                                disabled={currentNewsPage === totalPages - 1}
+                                                className="p-2 bg-gray-800 hover:bg-gray-700 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                                                aria-label="Próxima página de notícias"
+                                            >
+                                                <ChevronRight />
+                                            </button>
+                                        </div>
+                                    )}
+                                </div>
+
+                                {displayedNews.length === 0 ? (
+                                    <div className={`text-center py-12 text-gray-400 ${cardBgClass} rounded-xl`}>
+                                        <p className="text-lg mb-2">Nenhum conteúdo encontrado</p>
+                                        {searchQuery && (
+                                            <button 
+                                                onClick={() => setSearchQuery('')}
+                                                className="text-purple-400 hover:text-purple-300 underline"
+                                            >
+                                                Limpar busca
+                                            </button>
+                                        )}
+                                    </div>
+                                ) : (
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                        {displayedNews.map((item) => (
+                                            <NewsCard 
+                                                key={item.id} 
+                                                item={item} 
+                                                fontSize={accessibilitySettings.fontSize}
+                                                darkMode={accessibilitySettings.darkMode}
+                                            />
+                                        ))}
+                                    </div>
+                                )}
+                            </div>
+
+                            {/* Sidebar */}
+                            <aside className="lg:col-span-1">
+                                <div className={`${cardBgClass} rounded-xl p-6 sticky top-32 border ${accessibilitySettings.darkMode ? 'border-gray-800' : 'border-gray-200'}`}>
+                                    <h3 className="text-xl font-bold mb-4 flex items-center space-x-2">
+                                        <TrendingUp />
+                                        <span>Em Alta</span>
+                                    </h3>
+                                    
+                                    {/* Carrossel de Trending */}
+                                    <div className="relative mb-6">
+                                        <a
+                                            href={trending[trendingIndex].url}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            className="block rounded-lg overflow-hidden group"
+                                        >
+                                            <div className="relative">
+                                                <ImageLoader
+                                                    src={trending[trendingIndex].image}
+                                                    alt={trending[trendingIndex].title}
+                                                    className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
+                                                />
+                                                <div className="absolute top-3 left-3 px-3 py-1 bg-purple-600 rounded-full text-xs font-bold">
+                                                    #{trendingIndex + 1} EM ALTA
+                                                </div>
+                                            </div>
+                                            <div className={`p-4 ${hoverBgClass} transition-colors`}>
+                                                <p className="text-base font-bold group-hover:text-purple-400 transition-colors mb-2 line-clamp-2">
+                                                    {trending[trendingIndex].title}
+                                                </p>
+                                                <div className="flex items-center space-x-1 text-sm text-gray-500">
+                                                    <Eye />
+                                                    <span>{trending[trendingIndex].views} visualizações</span>
+                                                </div>
+                                            </div>
+                                        </a>
+                                        
+                                        {/* Indicadores do carrossel */}
+                                        <div className="flex justify-center space-x-2 mt-4">
+                                            {trending.map((_, index) => (
+                                                <button
+                                                    key={index}
+                                                    onClick={() => setTrendingIndex(index)}
+                                                    className={`h-2 rounded-full transition-all ${
+                                                        index === trendingIndex ? 'bg-purple-500 w-8' : 'bg-gray-600 w-2'
+                                                    }`}
+                                                    aria-label={`Ver notícia em alta ${index + 1}`}
+                                                    aria-current={index === trendingIndex}
+                                                />
+                                            ))}
+                                        </div>
+                                    </div>
+
+                                    {/* Lista completa de trending */}
+                                    <div className="mt-6 space-y-2">
+                                        {trending.map((item, index) => (
+                                            <a
+                                                key={index}
+                                                href={item.url}
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                                className={`flex items-center space-x-3 p-2 ${hoverBgClass} rounded-lg cursor-pointer transition-colors group ${
+                                                    index === trendingIndex ? 'bg-purple-900/20' : ''
+                                                }`}
+                                            >
+                                                <span className="text-lg font-bold text-purple-400 min-w-[24px]">
+                                                    {index + 1}
+                                                </span>
+                                                <div className="flex-1">
+                                                    <p className="text-xs font-medium group-hover:text-purple-400 transition-colors line-clamp-2">
+                                                        {item.title}
+                                                    </p>
+                                                </div>
+                                                <ChevronRight />
+                                            </a>
+                                        ))}
+                                    </div>
+
+                                    <div className="mt-8 p-4 bg-gradient-to-br from-purple-900/50 to-blue-900/50 rounded-lg border border-purple-500/20">
+                                        <h4 className="font-bold mb-2">📬 Newsletter</h4>
+                                        <p className="text-sm text-gray-300 mb-3">
+                                            Receba as melhores notícias direto no seu email!
+                                        </p>
+                                        <form onSubmit={handleNewsletter}>
+                                            <label htmlFor="newsletter-email" className="sr-only">Email para newsletter</label>
+                                            <input
+                                                id="newsletter-email"
+                                                type="email"
+                                                value={email}
+                                                onChange={(e) => setEmail(e.target.value)}
+                                                placeholder="seu@email.com"
+                                                required
+                                                className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg mb-2 text-sm focus:outline-none focus:border-purple-500 transition-colors text-white"
+                                            />
+                                            <button 
+                                                type="submit"
+                                                className="w-full py-2 bg-purple-600 hover:bg-purple-700 rounded-lg font-medium text-sm transition-colors"
+                                            >
+                                                Inscrever-se
+                                            </button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </aside>
+                        </div>
+                    </main>
+
+                    {/* Footer */}
+                    <footer className={`${cardBgClass} border-t ${accessibilitySettings.darkMode ? 'border-gray-800' : 'border-gray-200'} mt-16`}>
+                        <div className="container mx-auto px-4 py-8">
+                            <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mb-8">
+                                <div>
+                                    <h4 className="font-bold mb-3">Plataformas</h4>
+                                    <ul className="space-y-2 text-sm text-gray-400">
+                                        <li>
+                                            <a href="#pc" onClick={() => setSelectedCategory('pc')} className="hover:text-purple-400 transition-colors">
+                                                PC
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a href="#playstation" onClick={() => setSelectedCategory('playstation')} className="hover:text-purple-400 transition-colors">
+                                                PlayStation
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a href="#xbox" onClick={() => setSelectedCategory('xbox')} className="hover:text-purple-400 transition-colors">
+                                                Xbox
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a href="#nintendo" onClick={() => setSelectedCategory('nintendo')} className="hover:text-purple-400 transition-colors">
+                                                Nintendo
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </div>
+                                <div>
+                                    <h4 className="font-bold mb-3">Conteúdo</h4>
+                                    <ul className="space-y-2 text-sm text-gray-400">
+                                        <li>
+                                            <button onClick={() => { setSelectedCategory('todas'); setSearchQuery(''); }} className="hover:text-purple-400 transition-colors">
+                                                Notícias
+                                            </button>
+                                        </li>
+                                        <li>
+                                            <button onClick={() => { setSelectedCategory('reviews'); setSearchQuery(''); }} className="hover:text-purple-400 transition-colors">
+                                                Reviews
+                                            </button>
+                                        </li>
+                                        <li>
+                                            <button onClick={() => { setSelectedCategory('vídeos'); setSearchQuery(''); }} className="hover:text-purple-400 transition-colors">
+                                                Vídeos
+                                            </button>
+                                        </li>
+                                    </ul>
+                                </div>
+                                <div>
+                                    <h4 className="font-bold mb-3">Sobre</h4>
+                                    <ul className="space-y-2 text-sm text-gray-400">
+                                        <li><a href="#sobre" className="hover:text-purple-400 transition-colors">Quem Somos</a></li>
+                                        <li><a href="#contato" className="hover:text-purple-400 transition-colors">Contato</a></li>
+                                        <li><a href="#anuncie" className="hover:text-purple-400 transition-colors">Anuncie</a></li>
+                                        <li><a href="#trabalhe" className="hover:text-purple-400 transition-colors">Trabalhe Conosco</a></li>
+                                    </ul>
+                                </div>
+                                <div>
+                                    <h4 className="font-bold mb-3">Redes Sociais</h4>
+                                    <ul className="space-y-2 text-sm text-gray-400">
+                                        <li><a href="https://twitter.com" target="_blank" rel="noopener noreferrer" className="hover:text-purple-400 transition-colors">Twitter</a></li>
+                                        <li><a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="hover:text-purple-400 transition-colors">Instagram</a></li>
+                                        <li><a href="https://youtube.com" target="_blank" rel="noopener noreferrer" className="hover:text-purple-400 transition-colors">YouTube</a></li>
+                                        <li><a href="https://discord.com" target="_blank" rel="noopener noreferrer" className="hover:text-purple-400 transition-colors">Discord</a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div className={`border-t ${accessibilitySettings.darkMode ? 'border-gray-800' : 'border-gray-200'} pt-6 text-center text-sm text-gray-400`}>
+                                <p>© 2024 FlowGames. Todos os direitos reservados.</p>
+                                <p className="mt-2 text-xs">Portal desenvolvido com acessibilidade e responsividade total</p>
+                            </div>
+                        </div>
+                    </footer>
+                </div>
+            );
+        };
+
+        ReactDOM.render(<GamingNewsPortal />, document.getElementById('root'));
+    </script>
+</body>
+</html>
