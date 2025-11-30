@@ -162,7 +162,6 @@ body,
     background: #6b7280;
 }
 
-/* --- NOVO: Estilo da Barra de Rolagem do Chat --- */
 .custom-scrollbar::-webkit-scrollbar {
     width: 6px;
 }
