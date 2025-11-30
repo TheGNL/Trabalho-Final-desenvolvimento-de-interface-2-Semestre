@@ -415,7 +415,6 @@ const GamingNewsPortal = () => {
     });
     const [trendingIndex, setTrendingIndex] = useState(0);
     const heroTimerRef = useRef(null);
-    // --- ESTADOS DO CHAT (IA) ---
     const [chatMessages, setChatMessages] = useState([
         { role: 'bot', text: 'Olá, gamer! Sou o Nexus AI. Pergunte-me sobre notícias, dicas ou hardware.' }
     ]);
@@ -762,9 +761,6 @@ const GamingNewsPortal = () => {
             [key]: value
         }));
     };
-    // --- LÓGICA DO CHAT ---
-    
-    // Auto-scroll: Rola para baixo quando chega mensagem nova
     useEffect(() => {
         if (chatEndRef.current) {
             chatEndRef.current.scrollIntoView({ behavior: 'smooth' });
@@ -777,13 +773,11 @@ const GamingNewsPortal = () => {
 
         const userMsg = chatInput;
         
-        // 1. Mostra msg do usuário e limpa o campo
         setChatMessages(prev => [...prev, { role: 'user', text: userMsg }]);
         setChatInput(''); 
         setIsChatLoading(true);
 
         try {
-            // Chama o Python
             const response = await fetch('http://127.0.0.1:5000/chat', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -792,7 +786,6 @@ const GamingNewsPortal = () => {
 
             const data = await response.json();
 
-            // 2. Processa a resposta
             if (data.resposta) {
                 setChatMessages(prev => [...prev, { role: 'bot', text: data.resposta }]);
             } else if (data.erro) {
@@ -1158,7 +1151,6 @@ const GamingNewsPortal = () => {
                     </div>
 
                     <aside className="lg:col-span-1">
-                        {/* WIDGET DO CHAT (NEXUS AI) */}
                         <div className={`${cardBgClass} rounded-xl p-0 overflow-hidden border ${borderClass} shadow-lg mb-6`}>
                             <div className="bg-gradient-to-r from-purple-800 to-indigo-800 p-4 flex items-center justify-between">
                                 <div className="flex items-center space-x-2 text-white">
@@ -1167,8 +1159,6 @@ const GamingNewsPortal = () => {
                                 </div>
                                 <span className="text-xs bg-green-500 text-black px-2 py-0.5 rounded-full font-bold">ON</span>
                             </div>
-                            
-                            {/* Área das Mensagens */}
                             <div className="p-4 h-64 overflow-y-auto space-y-3 bg-opacity-50 custom-scrollbar">
                                 {chatMessages.map((msg, idx) => (
                                     <div key={idx} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
@@ -1190,8 +1180,6 @@ const GamingNewsPortal = () => {
                                 )}
                                 <div ref={chatEndRef} />
                             </div>
-
-                            {/* Área de Digitação */}
                             <form onSubmit={handleSendChat} className={`p-3 border-t ${borderClass} flex gap-2`}>
                                 <input
                                     type="text"
@@ -1389,5 +1377,4 @@ const GamingNewsPortal = () => {
         </div>
     );
 };
-// Renderizar o componente
 ReactDOM.render(<GamingNewsPortal />, document.getElementById('root'));
