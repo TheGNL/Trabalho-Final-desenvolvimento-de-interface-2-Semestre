@@ -107,6 +107,14 @@ const Play = () => (
     </svg>
 );
 
+const BotIcon = () => (
+    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="11" width="18" height="10" rx="2"></rect><circle cx="12" cy="5" r="2"></circle><path d="M12 7v4"></path><line x1="8" y1="16" x2="8" y2="16"></line><line x1="16" y1="16" x2="16" y2="16"></line></svg>
+
+);
+const SendIcon = () => (
+    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+);
+
 const ImageLoader = ({ src, alt, className }) => {
     const [loaded, setLoaded] = useState(false);
     const [error, setError] = useState(false);
@@ -407,6 +415,13 @@ const GamingNewsPortal = () => {
     });
     const [trendingIndex, setTrendingIndex] = useState(0);
     const heroTimerRef = useRef(null);
+    // --- ESTADOS DO CHAT (IA) ---
+    const [chatMessages, setChatMessages] = useState([
+        { role: 'bot', text: 'Olá, gamer! Sou o Nexus AI. Pergunte-me sobre notícias, dicas ou hardware.' }
+    ]);
+    const [chatInput, setChatInput] = useState('');
+    const [isChatLoading, setIsChatLoading] = useState(false);
+    const chatEndRef = useRef(null);
 
     const categories = ['Todas', 'PC', 'PlayStation', 'Xbox', 'Nintendo', 'Mobile', 'eSports', 'Reviews','Vídeos'];
 
@@ -746,6 +761,52 @@ const GamingNewsPortal = () => {
             ...prev,
             [key]: value
         }));
+    };
+    // --- LÓGICA DO CHAT ---
+    
+    // Auto-scroll: Rola para baixo quando chega mensagem nova
+    useEffect(() => {
+        if (chatEndRef.current) {
+            chatEndRef.current.scrollIntoView({ behavior: 'smooth' });
+        }
+    }, [chatMessages]);
+
+    const handleSendChat = async (e) => {
+        e.preventDefault();
+        if (!chatInput.trim()) return;
+
+        const userMsg = chatInput;
+        
+        // 1. Mostra msg do usuário e limpa o campo
+        setChatMessages(prev => [...prev, { role: 'user', text: userMsg }]);
+        setChatInput(''); 
+        setIsChatLoading(true);
+
+        try {
+            // Chama o Python
+            const response = await fetch('http://127.0.0.1:5000/chat', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ mensagem: userMsg })
+            });
+
+            const data = await response.json();
+
+            // 2. Processa a resposta
+            if (data.resposta) {
+                setChatMessages(prev => [...prev, { role: 'bot', text: data.resposta }]);
+            } else if (data.erro) {
+                setChatMessages(prev => [...prev, { role: 'bot', text: 'ERRO TÉCNICO: ' + data.erro }]);
+            } else {
+                setChatMessages(prev => [...prev, { role: 'bot', text: 'Erro desconhecido.' }]);
+            }
+
+        } catch (error) {
+            console.error("Erro fetch:", error);
+            setChatMessages(prev => [...prev, { role: 'bot', text: 'Erro: Servidor Python offline.' }]);
+        } finally {
+            setIsChatLoading(false);
+        }
     };
 
     const nextHero = () => {
@@ -1097,6 +1158,59 @@ const GamingNewsPortal = () => {
                     </div>
 
                     <aside className="lg:col-span-1">
+                        {/* WIDGET DO CHAT (NEXUS AI) */}
+                        <div className={`${cardBgClass} rounded-xl p-0 overflow-hidden border ${borderClass} shadow-lg mb-6`}>
+                            <div className="bg-gradient-to-r from-purple-800 to-indigo-800 p-4 flex items-center justify-between">
+                                <div className="flex items-center space-x-2 text-white">
+                                    <BotIcon />
+                                    <h3 className="font-bold">Nexus AI</h3>
+                                </div>
+                                <span className="text-xs bg-green-500 text-black px-2 py-0.5 rounded-full font-bold">ON</span>
+                            </div>
+                            
+                            {/* Área das Mensagens */}
+                            <div className="p-4 h-64 overflow-y-auto space-y-3 bg-opacity-50 custom-scrollbar">
+                                {chatMessages.map((msg, idx) => (
+                                    <div key={idx} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
+                                        <div className={`max-w-[85%] rounded-lg p-3 text-sm ${
+                                            msg.role === 'user' 
+                                                ? 'bg-purple-600 text-white rounded-br-none' 
+                                                : `${accessibilitySettings.darkMode ? 'bg-gray-800 text-gray-200' : 'bg-gray-200 text-gray-800'} rounded-bl-none`
+                                        }`}>
+                                            {msg.text}
+                                        </div>
+                                    </div>
+                                ))}
+                                {isChatLoading && (
+                                    <div className="flex justify-start">
+                                        <div className="bg-gray-800 rounded-lg p-3 text-sm text-gray-400 animate-pulse">
+                                            Digitando...
+                                        </div>
+                                    </div>
+                                )}
+                                <div ref={chatEndRef} />
+                            </div>
+
+                            {/* Área de Digitação */}
+                            <form onSubmit={handleSendChat} className={`p-3 border-t ${borderClass} flex gap-2`}>
+                                <input
+                                    type="text"
+                                    value={chatInput}
+                                    onChange={(e) => setChatInput(e.target.value)}
+                                    placeholder="Pergunte sobre games..."
+                                    className={`flex-1 px-3 py-2 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-purple-500 ${
+                                        accessibilitySettings.darkMode ? 'bg-gray-800 text-white border-gray-700' : 'bg-gray-100 text-gray-900 border-gray-300'
+                                    } border`}
+                                />
+                                <button 
+                                    type="submit" 
+                                    className="p-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg transition-colors"
+                                    disabled={isChatLoading}
+                                >
+                                    <SendIcon />
+                                </button>
+                            </form>
+                        </div>
                         <div className={`${cardBgClass} rounded-xl p-6 sticky top-32 border ${accessibilitySettings.darkMode ? 'border-gray-800' : 'border-gray-200'}`}>
                             <h3 className="text-xl font-bold mb-4 flex items-center space-x-2">
                                 <TrendingUp />

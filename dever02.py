@@ -1,0 +1,20 @@
+from dever01 import Personagem,Heroi
+
+if __name__ == "__main__":
+   P1 = Personagem("Goku",120)
+   P2 = Personagem("Naruto",150)
+   H1 = Heroi("Ichigo",200,"shinigame","Bankai")
+   H2 = Heroi("Luffy",350,"Pirata","Gomu gomu no mi")
+   P1.set_nome("Bachira")
+   print("\nNome:",P1.get_nome())
+   print("Nivel:",P1.get_nivel())
+   print("\nNome:",P2.get_nome())
+   print("Nivel:",P2.get_nivel())
+   print("\nNome:",H1.get_nome())
+   print("Nivel:",H1.get_nivel())
+   print("Classe:",H1.get_classe())
+   print("Habilidade:",H1.get_habilidade())
+   print("\nNome:",H2.get_nome())
+   print("Nivel:",H2.get_nivel())
+   print("Classe:",H2.get_classe())
+   print("Habilidade:",H2.get_habilidade())
