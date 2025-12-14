@@ -48,6 +48,7 @@ Painel exclusivo de configurações para inclusão digital:
 
 ### Opção 1: Visualização Online (GitHub Pages)
 Acesse a interface visual do projeto diretamente pelo navegador:
-🔗 **[Clique aqui para acessar o FlowGames](https://thegnl.github.io/Trabalho-Final-desenvolvimento-de-interface-2-Semestre/)**
+🔗 **[Clique aqui para acessar o FlowGames](https://thegnl.github.io/Trabalho-Final-desenvolvimento-de-interface-2-Semestre/GitClone/)**
 
 > **Aviso:** Na versão online (GitHub Pages), o Chatbot **Nexus AI** estará desativado, pois ele depende do servidor Python (Backend). Apenas a interface visual funcionará.
+
